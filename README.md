@@ -35,3 +35,5 @@ This app requires at least node version 18.
 3. Run `npm run dev`
 
 The app will then be running on http://localhost:5173
+
+# You can find the [workshop slides here](https://urls.cat/langchainjs-slides)!
