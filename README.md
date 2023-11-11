@@ -36,4 +36,4 @@ This app requires at least node version 18.
 
 The app will then be running on http://localhost:5173
 
-# You can find the [workshop slides here](https://urls.cat/langchainjs-slides)!
+## You can find the [workshop slides here](https://urls.cat/langchainjs-slides)!
