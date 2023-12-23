@@ -57,6 +57,11 @@
           : []),
       ]);
   }
+  function onKeyUp(event: KeyboardEvent) {
+    if (event.key === "Enter") {
+      ask();
+    }
+  }
 </script>
 
 <div class="h-full w-full justify-center items-center relative">
@@ -114,6 +119,7 @@
         type="text"
         placeholder="Ask your question here..."
         bind:value={question}
+        on:keyup={onKeyUp}
       />
       <button type="button" class="input-group-shim w-20" on:click={ask}
         >Submit</button
