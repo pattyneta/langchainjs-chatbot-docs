@@ -1,5 +1,5 @@
 <script lang="ts">
-  let question = '';
+  let question = "";
   let conversation: { id: number; text: string; isQuestion: boolean }[] = [];
   let isLoading = false;
   let error: string | null = null;
@@ -7,30 +7,55 @@
   async function ask() {
     isLoading = true;
 
-    const newQuestion = { id: conversation.length + 1, text: question, isQuestion: true };
+    const newQuestion = {
+      id: conversation.length + 1,
+      text: question,
+      isQuestion: true,
+    };
     conversation = [...conversation, newQuestion];
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
+      const response = await fetch("/api/chat", {
+        method: "POST",
         body: JSON.stringify({ question }),
         headers: {
-          'content-type': 'application/json'
-        }
+          "content-type": "application/json",
+        },
       });
 
       if (response.ok) {
         const data = await response.json();
-        const newResponse = { id: conversation.length + 1, text: data, isQuestion: false };
+        const newResponse = {
+          id: conversation.length + 1,
+          text: data,
+          isQuestion: false,
+        };
         conversation = [...conversation, newResponse];
       } else {
-        error = 'Failed to fetch data. Please try again.';
+        error = "Failed to fetch data. Please try again.";
       }
     } catch (e) {
-      error = 'An error occurred. Please try again later.';
+      error = "An error occurred. Please try again later.";
     }
 
     isLoading = false;
+  }
+  function formatText(text: string) {
+    const codeBlockRegex = /```[\s\S]*?```/g;
+    const parts = text.split(codeBlockRegex);
+    const codeBlocks = text.match(codeBlockRegex) || [];
+
+    return parts
+      .map((part, index) => ({
+        text: part,
+        isCode: false,
+      }))
+      .flatMap((part, index) => [
+        part,
+        ...(index < codeBlocks.length
+          ? [{ text: codeBlocks[index], isCode: true }]
+          : []),
+      ]);
   }
 </script>
 
@@ -38,7 +63,9 @@
   <div class="grid grid-row-[1fr_auto] w-full overflow-y-auto mb-24">
     {#each conversation as item (item.id)}
       <div
-        class="grid grid-cols-[auto_1fr] gap-2 max-w-2xl {item.isQuestion ? '' : 'ml-auto right-0'}"
+        class="grid grid-cols-[auto_1fr] gap-2 max-w-2xl {item.isQuestion
+          ? ''
+          : 'ml-auto right-0'}"
       >
         <div
           class="card m-2 p-4 h-auto {item.isQuestion
@@ -46,9 +73,18 @@
             : 'rounded-tr-none'} space-y-2"
         >
           <header class="flex justify-between items-center">
-            <p class="font-bold">{item.isQuestion ? 'You' : 'NodeBot'}</p>
+            <p class="font-bold">{item.isQuestion ? "You" : "NodeBot"}</p>
           </header>
-          <p>{item.text}</p>
+          {#each formatText(item.text) as part}
+            {#if part.isCode}
+              <pre
+                class="bg-gray-100 border border-gray-300 rounded p-2 overflow-auto text-sm text-gray-800">
+            <code>{part.text.replace(/^```|```$/g, "")}</code>
+          </pre>
+            {:else}
+              <p>{part.text}</p>
+            {/if}
+          {/each}
         </div>
       </div>
     {/each}
@@ -79,7 +115,9 @@
         placeholder="Ask your question here..."
         bind:value={question}
       />
-      <button type="button" class="input-group-shim w-20" on:click={ask}>Submit</button>
+      <button type="button" class="input-group-shim w-20" on:click={ask}
+        >Submit</button
+      >
     </div>
   </div>
 </div>
