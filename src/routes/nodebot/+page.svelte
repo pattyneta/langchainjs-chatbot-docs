@@ -30,6 +30,7 @@
           text: data,
           isQuestion: false,
         };
+        console.log(newResponse);
         conversation = [...conversation, newResponse];
       } else {
         error = "Failed to fetch data. Please try again.";
@@ -42,20 +43,31 @@
   }
   function formatText(text: string) {
     const codeBlockRegex = /```[\s\S]*?```/g;
+    // Regex to handle the list format as shown in the screenshot
+    const listItemRegex = /\d+\.\s/g;
+
     const parts = text.split(codeBlockRegex);
     const codeBlocks = text.match(codeBlockRegex) || [];
 
-    return parts
-      .map((part, index) => ({
-        text: part,
+    // Replace the list item format with a <br> tag for new lines
+    const formattedParts = parts.map((part, index) => {
+      // Split the text on the list item pattern and join with <br>
+      const splitList = part.split(listItemRegex);
+      const formattedList = splitList.join("<br>");
+
+      return {
+        text: formattedList,
         isCode: false,
-      }))
-      .flatMap((part, index) => [
-        part,
-        ...(index < codeBlocks.length
-          ? [{ text: codeBlocks[index], isCode: true }]
-          : []),
-      ]);
+      };
+    });
+
+    // Rebuild the text by interleaving code blocks and formatted parts
+    return formattedParts.flatMap((part, index) => [
+      part,
+      ...(index < codeBlocks.length
+        ? [{ text: codeBlocks[index], isCode: true }]
+        : []),
+    ]);
   }
   function onKeyUp(event: KeyboardEvent) {
     if (event.key === "Enter") {
@@ -84,10 +96,10 @@
             {#if part.isCode}
               <pre
                 class="bg-gray-100 border border-gray-300 rounded p-2 overflow-auto text-sm text-gray-800">
-            <code>{part.text.replace(/^```|```$/g, "")}</code>
-          </pre>
+      <code>{part.text.replace(/^```|```$/g, "")}</code>
+    </pre>
             {:else}
-              <p>{part.text}</p>
+              {@html part.text}
             {/if}
           {/each}
         </div>
