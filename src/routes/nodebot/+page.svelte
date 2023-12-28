@@ -1,10 +1,12 @@
 <script lang="ts">
+  let inputField: HTMLInputElement;
   let question = "";
   let conversation: { id: number; text: string; isQuestion: boolean }[] = [];
   let isLoading = false;
   let error: string | null = null;
 
   async function ask() {
+    inputField.value = '';
     isLoading = true;
 
     const newQuestion = {
@@ -38,7 +40,6 @@
     } catch (e) {
       error = "An error occurred. Please try again later.";
     }
-
     isLoading = false;
   }
   function formatText(text: string) {
@@ -130,6 +131,7 @@
         title="URL Input"
         type="text"
         placeholder="Ask your question here..."
+        bind:this={inputField}
         bind:value={question}
         on:keyup={onKeyUp}
       />
