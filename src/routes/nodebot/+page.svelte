@@ -70,9 +70,16 @@
     ]);
   }
   function onKeyUp(event: KeyboardEvent) {
+    console.log(event);
+    if (event.keyCode == 13 && event.shiftKey)
+    {
+        event.preventDefault();
+        return;
+    }
     if (event.key === "Enter") {
       ask();
-    }
+    };
+
   }
 </script>
 
@@ -125,10 +132,9 @@
     class="border-t border-surface-500/30 bg-surface-800 p-4 fixed bottom-0 w-full h-18 overflow-x-none"
   >
     <div class="input-group input-group-divider flex rounded-container-token">
-      <input
+      <textarea
         class="bg-transparent border-0 ring-0 flex-1"
         title="URL Input"
-        type="text"
         placeholder="Ask your question here..."
         bind:value={question}
         on:keyup={onKeyUp}
