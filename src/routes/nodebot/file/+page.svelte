@@ -80,6 +80,7 @@
         name="pdfFile"
         accept=".pdf"
         bind:files
+        disabled={isLoading}
       />
       <input
         class="bg-transparent border-0 ring-0"
@@ -88,6 +89,7 @@
         name="question"
         placeholder="Ask your question here..."
         bind:value={question}
+        disabled={isLoading}
       />
       <button type="button" class="input-group-shim" on:click={ask}
         >Submit</button

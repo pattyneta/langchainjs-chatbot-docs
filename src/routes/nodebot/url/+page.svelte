@@ -78,6 +78,7 @@
         type="text"
         placeholder="Insert URL here..."
         bind:value={url}
+        disabled={isLoading}
       />
       <input
         class="bg-transparent border-0 ring-0"
@@ -85,6 +86,7 @@
         type="text"
         placeholder="Ask your question here..."
         bind:value={question}
+        disabled={isLoading}
       />
       <button type="button" class="input-group-shim" on:click={ask}
         >Submit</button
