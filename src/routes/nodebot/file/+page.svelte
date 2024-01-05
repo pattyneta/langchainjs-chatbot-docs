@@ -41,6 +41,7 @@
     } catch (e) {
       error = "An error occurred. Please try again later.";
     } finally {
+      question = "";
       isLoading = false;
     }
   }

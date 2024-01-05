@@ -40,7 +40,7 @@
     } catch (e) {
       error = "An error occurred. Please try again later.";
     }
-
+    question = "";
     isLoading = false;
   }
 </script>
