@@ -1,10 +1,23 @@
 <script lang="ts">
+  import { ChatBubble } from "$lib/ui";
+
   let question = "";
   let conversation: { id: number; text: string; isQuestion: boolean }[] = [];
   let isLoading = false;
   let error: string | null = null;
+  let lastAskedTime = 0;
 
   async function ask() {
+    const now = Date.now();
+    if (now - lastAskedTime < 1000) {
+      return;
+    }
+    lastAskedTime = now;
+
+    if (!question.trim()) {
+      return;
+    }
+
     isLoading = true;
 
     const newQuestion = {
@@ -38,39 +51,12 @@
     } catch (e) {
       error = "An error occurred. Please try again later.";
     }
-
+    question = "";
     isLoading = false;
   }
-  function formatText(text: string) {
-    const codeBlockRegex = /```[\s\S]*?```/g;
-    // Regex to handle the list format as shown in the screenshot
-    const listItemRegex = /\d+\.\s/g;
 
-    const parts = text.split(codeBlockRegex);
-    const codeBlocks = text.match(codeBlockRegex) || [];
-
-    // Replace the list item format with a <br> tag for new lines
-    const formattedParts = parts.map((part, index) => {
-      // Split the text on the list item pattern and join with <br>
-      const splitList = part.split(listItemRegex);
-      const formattedList = splitList.join("<br>");
-
-      return {
-        text: formattedList,
-        isCode: false,
-      };
-    });
-
-    // Rebuild the text by interleaving code blocks and formatted parts
-    return formattedParts.flatMap((part, index) => [
-      part,
-      ...(index < codeBlocks.length
-        ? [{ text: codeBlocks[index], isCode: true }]
-        : []),
-    ]);
-  }
   function onKeyUp(event: KeyboardEvent) {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !isLoading) {
       ask();
     }
   }
@@ -78,60 +64,37 @@
 
 <div class="h-full w-full justify-center items-center relative">
   <div class="grid grid-row-[1fr_auto] w-full overflow-y-auto mb-24">
+    {#if conversation.length === 0}
+      <ChatBubble
+        item={{
+          id: 1,
+          text: "Hi! I am NodeBot. Ask me anything and I will try to answer it.",
+          isQuestion: false,
+        }}
+      />
+    {/if}
     {#each conversation as item (item.id)}
-      <div
-        class="grid grid-cols-[auto_1fr] gap-2 max-w-2xl {item.isQuestion
-          ? ''
-          : 'ml-auto right-0'}"
-      >
-        <div
-          class="card m-2 p-4 h-auto {item.isQuestion
-            ? 'variant-soft rounded-tl-none'
-            : 'rounded-tr-none'} space-y-2"
-        >
-          <header class="flex justify-between items-center">
-            <p class="font-bold">{item.isQuestion ? "You" : "NodeBot"}</p>
-          </header>
-          {#each formatText(item.text) as part}
-            {#if part.isCode}
-              <pre
-                class="bg-gray-100 border border-gray-300 rounded p-2 overflow-auto text-sm text-gray-800">
-      <code>{part.text.replace(/^```|```$/g, "")}</code>
-    </pre>
-            {:else}
-              {@html part.text}
-            {/if}
-          {/each}
-        </div>
-      </div>
+      <ChatBubble {item} />
     {/each}
   </div>
   {#if isLoading}
-    <div class="grid grid-row-[1fr_auto] w-full overflow-y-auto mb-24">
-      <div class="grid grid-cols-[auto_1fr] gap-2 max-w-2xl ml-auto right-0">
-        <div class="card m-2 p-4 h-auto variant-soft rounded-tl-none space-y-2">
-          <header class="flex justify-between items-center">
-            <p class="font-bold">NodeBot</p>
-          </header>
-          <p>Typing...</p>
-        </div>
-      </div>
-    </div>
+    <ChatBubble isLoading={true} />
   {/if}
   {#if error}
     <p>{error}</p>
   {/if}
   <div
-    class="border-t border-surface-500/30 bg-surface-800 p-4 fixed bottom-0 w-full h-18 overflow-x-none"
+    class="border-t border-surface-500/30 bg-surface-800 p-4 fixed bottom-0 w-[-webkit-fill-available] h-18 overflow-x-none"
   >
     <div class="input-group input-group-divider flex rounded-container-token">
       <input
         class="bg-transparent border-0 ring-0 flex-1"
-        title="URL Input"
+        title="Text Input"
         type="text"
         placeholder="Ask your question here..."
         bind:value={question}
         on:keyup={onKeyUp}
+        disabled={isLoading}
       />
       <button type="button" class="input-group-shim w-20" on:click={ask}
         >Submit</button
