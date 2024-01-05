@@ -82,7 +82,7 @@
       </AppRailAnchor>
       <svelte:fragment slot="trail">
         <AppRailAnchor
-          href="https://github.com/jouwdan/langchainjs-workshop"
+          href="https://github.com/pattyneta/langchainjs-chatbot-docs"
           target="_blank"
           name="github"
           title="github"
