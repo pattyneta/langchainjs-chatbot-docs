@@ -20,7 +20,7 @@
       class="card h-56 p-8 m-2 flex items-center justify-center hover:scale-105 transition-all"
       href="/nodebot/file"
     >
-      <h2>Read data from local file</h2>
+      <h2>Read data from local files</h2>
     </a>
   </div>
 </div>
