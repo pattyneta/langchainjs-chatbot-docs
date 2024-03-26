@@ -18,7 +18,12 @@
 
     try {
       const formData = new FormData();
-      formData.append("pdfFile", files[0]);
+
+      // Append all files
+      for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+      }
+
       formData.append("question", question);
 
       const response = await fetch("/api/file", {
@@ -74,12 +79,14 @@
     <div
       class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token"
     >
+      <!-- Allow multiple PDF and CSV files -->
       <input
         class="bg-transparent border-0 ring-0 mt-1 ml-1"
-        title="PDF File Input"
+        title="File Input"
         type="file"
-        name="pdfFile"
-        accept=".pdf"
+        name="files"
+        accept=".pdf, .csv, .docx, .txt"
+        multiple
         bind:files
         disabled={isLoading}
       />
