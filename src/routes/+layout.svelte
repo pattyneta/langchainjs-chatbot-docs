@@ -66,19 +66,19 @@
       </AppRailAnchor>
       <AppRailAnchor
         href="/nodebot/file"
-        name="pdf"
-        title="pdf"
+        name="files"
+        title="files"
         selected={$page.url.pathname === "/nodebot/file"}
       >
         <svelte:fragment slot="lead">
           <Icon
-            icon="fluent:document-pdf-24-filled"
+            icon="fluent:document-24-filled"
             width="24"
             height="24"
             class="mx-auto"
           />
         </svelte:fragment>
-        <span>PDF</span>
+        <span>Files</span>
       </AppRailAnchor>
       <svelte:fragment slot="trail">
         <AppRailAnchor
