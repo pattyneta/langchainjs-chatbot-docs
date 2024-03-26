@@ -23,6 +23,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "autoprefixer": "10.4.16",
+    "d3-dsv": "2.0.0",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-svelte": "^2.30.0",
@@ -43,6 +44,7 @@
     "cheerio": "^1.0.0-rc.12",
     "hnswlib-node": "^1.4.2",
     "langchain": "^0.0.182-rc.1",
+    "mammoth": "1.7.1",
     "pdf-parse": "^1.1.1"
   }
 }
