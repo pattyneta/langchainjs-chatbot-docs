@@ -1,18 +1,11 @@
 <script lang="ts">
   import { ChatBubble } from "$lib/ui";
 
-  let elemChat: HTMLElement;
   let files: FileList;
   let question = "";
   let conversation: { id: number; text: string; isQuestion: boolean }[] = [];
   let isLoading = false;
   let error: string | null = null;
-
-  function scrollChatBottom(behavior: ScrollBehavior = "smooth"): void {
-    if (elemChat) {
-      elemChat.scrollTo({ top: elemChat.scrollHeight, behavior });
-    }
-  }
 
   async function ask() {
     isLoading = true;
@@ -22,9 +15,6 @@
       isQuestion: true,
     };
     conversation = [...conversation, newQuestion];
-    setTimeout(() => {
-      scrollChatBottom("smooth");
-    }, 0);
 
     try {
       const formData = new FormData();
@@ -57,18 +47,12 @@
       error = "An error occurred. Please try again later.";
     } finally {
       question = "";
-      setTimeout(() => {
-        scrollChatBottom("smooth");
-      }, 0);
       isLoading = false;
     }
   }
 </script>
 
-<div
-  class="h-full w-full overflow-y-auto justify-center items-center relative"
-  bind:this={elemChat}
->
+<div class="h-full w-full overflow-y-auto justify-center items-center relative">
   <div class="grid grid-row-[1fr_auto] w-full mb-24">
     {#if conversation.length === 0}
       <ChatBubble
